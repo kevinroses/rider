@@ -12,8 +12,6 @@ import 'package:flutter_paytabs_bridge/PaymentSdkConfigurationDetails.dart';
 import 'package:flutter_paytabs_bridge/flutter_paytabs_bridge.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutterwave_standard/flutterwave.dart';
-import 'package:flutterwave_standard/view/view_utils.dart';
 import 'package:http/http.dart' as http;
 
 // import 'package:mercado_pago_mobile_checkout/mercado_pago_mobile_checkout.dart';
@@ -332,30 +330,6 @@ class PaymentScreenState extends State<PaymentScreen> {
     }
   }
 
-  /// FlutterWave Payment
-  void flutterWaveCheckout() async {
-    final customer = Customer(name: sharedPref.getString(USER_NAME).validate(), phoneNumber: sharedPref.getString(CONTACT_NUMBER).validate(), email: sharedPref.getString(USER_EMAIL).validate());
-
-    final Flutterwave flutterwave = Flutterwave(
-      context: context,
-      publicKey: flutterWavePublicKey.validate(),
-      currency: appStore.currencyName.toLowerCase(),
-      redirectUrl: "https://www.google.com",
-      txRef: DateTime.now().millisecond.toString(),
-      amount: widget.amount.toString(),
-      customer: customer,
-      paymentOptions: "card, payattitude",
-      customization: Customization(title: "Test Payment"),
-      isTestMode: isTestType,
-    );
-    final ChargeResponse response = await flutterwave.charge();
-    if (response.status == 'successful') {
-      toast(language.transactionSuccessful);
-      paymentConfirm();
-    } else {
-      FlutterwaveViewUtils.showToast(context, language.transactionFailed);
-    }
-  }
 
   /// PayTabs Payment
   void payTabsPayment() {
@@ -624,8 +598,6 @@ class PaymentScreenState extends State<PaymentScreen> {
                 payStackPayment(context);
               } else if (selectedPaymentType == PAYMENT_TYPE_PAYPAL) {
                 payPalPayment();
-              } else if (selectedPaymentType == PAYMENT_TYPE_FLUTTERWAVE) {
-                flutterWaveCheckout();
               } else if (selectedPaymentType == PAYMENT_TYPE_PAYTABS) {
                 payTabsPayment();
               } else if (selectedPaymentType == PAYMENT_TYPE_MERCADOPAGO) {
